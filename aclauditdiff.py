@@ -21,6 +21,7 @@ masterlist = list(set(sAssoc) - set(sApp))
 
 c3.writelist(masterList)
 
+#close the files
 f1.close()
 f2.close()
 f3.close()
