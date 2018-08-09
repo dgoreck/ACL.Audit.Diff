@@ -1,27 +1,62 @@
 #
-
 import csv
+import xlrd
 
-f1 = file('file.csv', 'r')
-f2 = file('file2.csv', 'r')
-f3 = file('output.csv, 'w')
+#HR can provide a xlsx file. Can take file name in as variable in future
+# For now rename to HRReport.xlsx
+#HR Report, Col #15(O) is the email
+workbook = xlrd.open_workbook("HRReport.xls")
+sheet = workbook.sheet_by_index(0)
 
-#importa and parse assocaite file that should be a CSV in following format
-# will call this sAssoc
-sAssoc = csv.reader(f1)
+for rowx in range(sheet.nrows):
+    cols = sheet.row_values(rowx)
+    print(cols)
 
-#import and parse application ACL file
-sApp = csv.reader(f2)
+
+#import and parse Assocaite CSV file
+# will call this lAssociates
+with open('AssocList.csv', 'r') as f1:
+  reader = csv.reader(f1)
+  lAssociates = []
+  for row in reader:
+    lAssociates.append(row[0])
+
+
+#import and parse Application.ACL  CSV
+# will call this lApplicationacl
+with open('ApplicationACL.csv', 'r') as f2:
+  reader = csv.reader(f2)
+  lApplicationacl = []
+  for row in reader:
+    lApplicationacl.append(row[0])
+
+#print(lAssociates)
+#print(lApplicationacl)
 
 #Output file
-sOutput = csv.writer(f3)
+#sOutput = csv.writer(f3)
 
 #function to compare and append to outputfile
-masterlist = list(set(sAssoc) - set(sApp))
+#convert lists to sets
+sAssociates = set(lAssociates)
+sApplicationacl = set(lApplicationacl)
 
-c3.writelist(masterList)
+masterlist = list(set(sAssociates) - set(sApplicationacl))
+print(masterlist)
 
-#close the files
+#f3 = file('output.csv', 'wb')
+#wo = csv.writer(f3, dialect='excel')
+#for item in masterlist:
+#    wo.writerow(item)
+with open("output.csv",'wb') as resultFile:
+  wr = csv.writer(resultFile, dialect='excel')
+  wr.writerows(masterlist)
+
+#f3.writelines(masterlist)
+
+#close the files uopadated
 f1.close()
 f2.close()
-f3.close()
+resultFile.close()
+
+
